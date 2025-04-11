@@ -17,22 +17,14 @@ def mapeamentoCustomizado(memoriaPrincipal: MemoriaPrincipal, memoriaSecundaria:
     #quantidade de paginas em cada memoria =)
     qtPaginasMemoriaPrincipal = memoriaPrincipal.qtPaginas
     qtPaginasMemoriaSecundaria = memoriaSecundaria.qtPaginas
-    tamanhoPagina = 4  # 4 bytes por página
+    
+    pag = endereco >> 2
+    cache_pag = pag % qtPaginasMemoriaPrincipal
 
-    # Calcula o número da pagina na memoria secundaria
-    page_num = endereco // tamanhoPagina
-    
-    # Mapeamento direto, sem estatísticas de uso (LRU tracking)
-    cache_offset = page_num % qtPaginasMemoriaPrincipal
-    
-    # Dados da memoria secundária
-    data = memoriaSecundaria.getPagina(page_num)
-    
-    # Checa se os dados já estâo em cache
-    if memoriaPrincipal.getPagina(cache_offset) != data:
-        memoriaPrincipal.setPagina(data, cache_offset)
-    
-    return cache_offset
+    data = memoriaSecundaria.getPagina(pag)
+    memoriaPrincipal.setPagina(data, cache_pag)
+
+    return cache_pag
 
 #Utilize esta funcao caso precise inicializar alguma variavel para o mapeamento =)
 def inicializaMapeamento(memoriaPrincipal: MemoriaPrincipal, memoriaSecundaria: MemoriaSecundaria):

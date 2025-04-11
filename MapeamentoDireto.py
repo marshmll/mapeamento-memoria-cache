@@ -12,13 +12,24 @@ from Memoria import testaMapeamento
 #    endereco que a pagina requisitada se encontra na memoriaPrincipal
 # Altere a funcao para fazer uso da tecnica de mapeamento direto
 def mapeamentoDireto(memoriaPrincipal: MemoriaPrincipal, memoriaSecundaria: MemoriaSecundaria, endereco: int) -> int:
-    #quantidade de paginas em cada memoria =)
     qtPaginasMemoriaPrincipal = memoriaPrincipal.qtPaginas
     qtPaginasMemoriaSecundaria = memoriaSecundaria.qtPaginas
+    tamanhoPagina = 4  # 4 bytes por página
 
+    # Calcula o número da pagina na memoria secundaria
+    page_num = endereco // tamanhoPagina
     
-    #retorna endereco
-    return 0
+    # Mapeamento direto, sem estatísticas de uso (LRU tracking)
+    cache_page = page_num % qtPaginasMemoriaPrincipal
+    
+    # Dados da memoria secundária
+    data = memoriaSecundaria.getPagina(page_num)
+    
+    # Checa se os dados já estâo em cache
+    if memoriaPrincipal.getPagina(cache_page) != data:
+        memoriaPrincipal.setPagina(data, cache_page)
+    
+    return cache_page
 
 #Utilize esta funcao caso precise inicializar alguma variavel para o mapeamento =)
 def inicializaMapeamento(memoriaPrincipal: MemoriaPrincipal, memoriaSecundaria: MemoriaSecundaria):

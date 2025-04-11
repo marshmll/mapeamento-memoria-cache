@@ -11,14 +11,23 @@ from Memoria import testaMapeamento
 # Retorno
 #    endereco que a pagina requisitada se encontra na memoriaPrincipal
 # Altere a funcao para fazer uso da tecnica de mapeamento associativo
+
+ASSOC_ADDR = {}
+
 def mapeamentoAssociativo(memoriaPrincipal: MemoriaPrincipal, memoriaSecundaria: MemoriaSecundaria, endereco: int) -> int:
     #quantidade de paginas em cada memoria =)
     qtPaginasMemoriaPrincipal = memoriaPrincipal.qtPaginas
     qtPaginasMemoriaSecundaria = memoriaSecundaria.qtPaginas
+    tamanhoPagina = 4
 
-    
-    #retorna endereco
-    return 0
+    pag = endereco >> 2
+    cache_pag = (endereco // tamanhoPagina) % qtPaginasMemoriaPrincipal
+
+    if endereco not in ASSOC_ADDR.keys():
+        ASSOC_ADDR[endereco] = cache_pag
+        memoriaPrincipal.setPagina(memoriaSecundaria.getPagina(pag), cache_pag)
+
+    return ASSOC_ADDR[endereco]
 
 #Utilize esta funcao caso precise inicializar alguma variavel para o mapeamento =)
 def inicializaMapeamento(memoriaPrincipal: MemoriaPrincipal, memoriaSecundaria: MemoriaSecundaria):
